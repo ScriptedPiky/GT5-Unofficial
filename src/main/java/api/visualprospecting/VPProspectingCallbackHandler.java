@@ -1,9 +1,8 @@
 package api.visualprospecting;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public abstract class VPProspectingCallbackHandler {
-    public abstract void prospectPotentialNewVein(World aWorld, int aX, int aY, int aZ, short aMeta);
+    public abstract void prospectPotentialNewVein(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer);
 }

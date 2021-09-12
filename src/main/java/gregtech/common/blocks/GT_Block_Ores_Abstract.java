@@ -312,27 +312,19 @@ public abstract class GT_Block_Ores_Abstract extends GT_Generic_Block implements
         aProspectingCallbackHandler = aHandler;
     }
 
-    private void invokeProspecting(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
-
-        if(GT_Mod.gregtechproxy instanceof GT_Client) {
-            if(Minecraft.getMinecraft().thePlayer == aPlayer) {
-                final TileEntity tTileEntity = aWorld.getTileEntity(aX, aY, aZ);
-                if (tTileEntity instanceof GT_TileEntity_Ores) {
-                    aProspectingCallbackHandler.prospectPotentialNewVein(aWorld, aX, aY, aZ, ((GT_TileEntity_Ores) tTileEntity).mMetaData);
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onBlockActivated(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer, int aSide, float aOffsetX, float aOffsetY, float aOffsetZ) {
-        invokeProspecting(aWorld, aX, aY, aZ, aPlayer);
+        if(aProspectingCallbackHandler != null) {
+            aProspectingCallbackHandler.prospectPotentialNewVein(aWorld, aX, aY, aZ, aPlayer);
+        }
         return super.onBlockActivated(aWorld, aX, aY, aZ, aPlayer, aSide, aOffsetX, aOffsetY, aOffsetZ);
     }
 
     @Override
     public void onBlockClicked(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
-        invokeProspecting(aWorld, aX, aY, aZ, aPlayer);
+        if(aProspectingCallbackHandler != null) {
+            aProspectingCallbackHandler.prospectPotentialNewVein(aWorld, aX, aY, aZ, aPlayer);
+        }
         super.onBlockClicked(aWorld, aX, aY, aZ, aPlayer);
     }
 }
