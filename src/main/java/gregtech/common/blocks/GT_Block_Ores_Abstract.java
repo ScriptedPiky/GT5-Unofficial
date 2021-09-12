@@ -16,10 +16,12 @@ import gregtech.common.render.GT_Renderer_Block;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -298,5 +300,42 @@ public abstract class GT_Block_Ores_Abstract extends GT_Generic_Block implements
                 if (!(new ItemStack(aItem, 1, i + 23000).getDisplayName().contains(aTextName))) aList.add(new ItemStack(aItem, 1, i + 23000));
             }
         }
+    }
+
+    // ----- Visual Prospecting Integration -----
+    @SideOnly(Side.CLIENT)
+    public abstract class ProspectingCallbackHandler {
+        public abstract void prospectPotentialNewVein(World aWorld, int aX, int aY, int aZ, short aMeta);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static ProspectingCallbackHandler aProspectingCallbackHandler = null;
+
+    @SideOnly(Side.CLIENT)
+    public static void registerProspectingCallback(ProspectingCallbackHandler aHandler) {
+        aProspectingCallbackHandler = aHandler;
+    }
+
+    private void invokeProspecting(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
+        if(!aWorld.provider.worldObj.isRemote) {
+            if(Minecraft.getMinecraft().thePlayer == aPlayer) {
+                final TileEntity tTileEntity = aWorld.getTileEntity(aX, aY, aZ);
+                if (tTileEntity instanceof GT_TileEntity_Ores) {
+                    aProspectingCallbackHandler.prospectPotentialNewVein(aWorld, aX, aY, aZ, ((GT_TileEntity_Ores) tTileEntity).mMetaData);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer, int aSide, float aOffsetX, float aOffsetY, float aOffsetZ) {
+        invokeProspecting(aWorld, aX, aY, aZ, aPlayer);
+        return super.onBlockActivated(aWorld, aX, aY, aZ, aPlayer, aSide, aOffsetX, aOffsetY, aOffsetZ);
+    }
+
+    @Override
+    public void onBlockClicked(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
+        invokeProspecting(aWorld, aX, aY, aZ, aPlayer);
+        super.onBlockClicked(aWorld, aX, aY, aZ, aPlayer);
     }
 }
