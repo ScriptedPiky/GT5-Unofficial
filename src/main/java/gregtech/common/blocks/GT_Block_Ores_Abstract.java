@@ -1,5 +1,6 @@
 package gregtech.common.blocks;
 
+import api.visualprospecting.VPProspectingCallbackHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -304,15 +305,10 @@ public abstract class GT_Block_Ores_Abstract extends GT_Generic_Block implements
 
     // ----- Visual Prospecting Integration -----
     @SideOnly(Side.CLIENT)
-    public static abstract class ProspectingCallbackHandler {
-        public abstract void prospectPotentialNewVein(World aWorld, int aX, int aY, int aZ, short aMeta);
-    }
+    private static VPProspectingCallbackHandler aProspectingCallbackHandler = null;
 
     @SideOnly(Side.CLIENT)
-    private static ProspectingCallbackHandler aProspectingCallbackHandler = null;
-
-    @SideOnly(Side.CLIENT)
-    public static void registerProspectingCallback(ProspectingCallbackHandler aHandler) {
+    public static void registerProspectingCallback(VPProspectingCallbackHandler aHandler) {
         aProspectingCallbackHandler = aHandler;
     }
 
