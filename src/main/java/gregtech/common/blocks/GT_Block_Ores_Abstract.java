@@ -304,7 +304,7 @@ public abstract class GT_Block_Ores_Abstract extends GT_Generic_Block implements
 
     // ----- Visual Prospecting Integration -----
     @SideOnly(Side.CLIENT)
-    public abstract class ProspectingCallbackHandler {
+    public static abstract class ProspectingCallbackHandler {
         public abstract void prospectPotentialNewVein(World aWorld, int aX, int aY, int aZ, short aMeta);
     }
 
