@@ -2,6 +2,7 @@ package gregtech.common.blocks;
 
 import api.visualprospecting.VPProspectingCallbackHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.GT_Mod;
@@ -13,6 +14,7 @@ import gregtech.api.items.GT_Generic_Block;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
+import gregtech.common.GT_Client;
 import gregtech.common.render.GT_Renderer_Block;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -304,16 +306,15 @@ public abstract class GT_Block_Ores_Abstract extends GT_Generic_Block implements
     }
 
     // ----- Visual Prospecting Integration -----
-    @SideOnly(Side.CLIENT)
     private static VPProspectingCallbackHandler aProspectingCallbackHandler = null;
 
-    @SideOnly(Side.CLIENT)
     public static void registerProspectingCallback(VPProspectingCallbackHandler aHandler) {
         aProspectingCallbackHandler = aHandler;
     }
 
     private void invokeProspecting(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
-        if(!aWorld.provider.worldObj.isRemote) {
+
+        if(GT_Mod.gregtechproxy instanceof GT_Client) {
             if(Minecraft.getMinecraft().thePlayer == aPlayer) {
                 final TileEntity tTileEntity = aWorld.getTileEntity(aX, aY, aZ);
                 if (tTileEntity instanceof GT_TileEntity_Ores) {
