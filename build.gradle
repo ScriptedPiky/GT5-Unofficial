@@ -57,10 +57,10 @@ repositories {
         name = "chickenbones"
         url = "https://nexus.covers1624.net/repository/maven-hosted/"
     }
-    maven {
-        name = "ic2, forestry"
-        url = "http://maven.ic2.player.to/"
-    }
+    //maven {
+        //name = "ic2, forestry"
+        //url = "http://maven.ic2.player.to/"
+    //}
     maven { // EnderIO & EnderCore
         name = 'tterrag Repo'
         url = "http://maven.tterrag.com"
