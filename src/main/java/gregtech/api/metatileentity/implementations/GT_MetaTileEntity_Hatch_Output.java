@@ -6,16 +6,16 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_Utility;
+import gregtech.common.gui.GT_CUIContainer_OutputHatch;
+import gregtech.common.gui.GT_Container_OutputHatch;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_PIPE_OUT;
 
@@ -25,7 +25,7 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
     public byte mMode = 0;
 
     public GT_MetaTileEntity_Hatch_Output(int aID, String aName, String aNameRegional, int aTier) {
-        super(aID, aName, aNameRegional, aTier, 3, new String[]{
+        super(aID, aName, aNameRegional, aTier, 4, new String[]{
         		"Fluid Output for Multiblocks",
         		"Capacity: "  + GT_Utility.formatNumbers(8000+8000*(aTier*(aTier+1)>>1)) + "L",
         		"Right click with screwdriver to restrict output",
@@ -34,11 +34,11 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
     }
 
     public GT_MetaTileEntity_Hatch_Output(String aName, int aTier, String aDescription, ITexture[][][] aTextures) {
-        super(aName, aTier, 3, aDescription, aTextures);
+        super(aName, aTier, 4, aDescription, aTextures);
     }
 
     public GT_MetaTileEntity_Hatch_Output(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
-        super(aName, aTier, 3, aDescription, aTextures);
+        super(aName, aTier, 4, aDescription, aTextures);
     }
 
     @Override
@@ -151,6 +151,38 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
     }
 
     @Override
+    public void updateFluidDisplayItem() {
+        super.updateFluidDisplayItem();
+        if (lockedFluidName == null || mMode < 8) mInventory[3] = null;
+        else {
+            FluidStack tLockedFluid = FluidRegistry.getFluidStack(lockedFluidName.replace("fluid.", "").replace(".name", ""), 1);
+            // Because getStackDisplaySlot() only allow return one int, this place I only can manually set.
+            if (tLockedFluid != null) {
+                mInventory[3] = GT_Utility.getFluidDisplayStack(tLockedFluid, false, true);
+            }
+            else {
+                mInventory[3] = null;
+            }
+        }
+    }
+
+    @Override
+    public boolean isValidSlot(int aIndex) {
+        // Because getStackDisplaySlot() only allow return one int, this place I only can manually set.
+        return aIndex != getStackDisplaySlot() && aIndex != 3;
+    }
+
+    @Override
+    public Object getServerGUI(int aID, InventoryPlayer aPlayerInventory, IGregTechTileEntity aBaseMetaTileEntity) {
+        return new GT_Container_OutputHatch(aPlayerInventory, aBaseMetaTileEntity);
+    }
+
+    @Override
+    public Object getClientGUI(int aID, InventoryPlayer aPlayerInventory, IGregTechTileEntity aBaseMetaTileEntity) {
+        return new GT_CUIContainer_OutputHatch(aPlayerInventory, aBaseMetaTileEntity, getLocalName());
+    }
+
+    @Override
     public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, byte aSide, ItemStack aStack) {
         return aSide == aBaseMetaTileEntity.getFrontFacing() && aIndex == 1;
     }
@@ -232,6 +264,7 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
                 break;
         }
     }
+
     private boolean tryToLockHatch(EntityPlayer aPlayer, byte aSide) {
         if (!getBaseMetaTileEntity().getCoverBehaviorAtSide(aSide).isGUIClickable(aSide, getBaseMetaTileEntity().getCoverIDAtSide(aSide), getBaseMetaTileEntity().getCoverDataAtSide(aSide), getBaseMetaTileEntity()))
             return false;
@@ -260,6 +293,11 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
         }
         return false;
     }
+
+    public byte getMode() {
+        return mMode;
+    }
+
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer, byte aSide, float aX, float aY, float aZ) {
         if (tryToLockHatch(aPlayer, aSide))
@@ -308,10 +346,12 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
         	GT_Utility.sendChatToPlayer(playerThatLockedfluid, String.format(trans("151.4","Sucessfully locked Fluid to %s"), mFluid.getLocalizedName()));
     	}
     }
+
     @Override
     public boolean isGivingInformation() {
         return true;
     }
+
     @Override
     public String[] getInfoData() {
         return new String[]{
