@@ -236,7 +236,7 @@ public class GT_Worldgenerator implements IWorldGenerator {
                                             validOreveins.put(oreveinSeed, tWorldGen);
                                             oreveinFound = true;
                                             if(aOreGenCallbackHandler != null) {
-                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mWorld, this.mX, this.mZ);
                                             }
                                             break;
                                         case GT_Worldgen_GT_Ore_Layer.NO_ORE_IN_BOTTOM_LAYER:
@@ -254,7 +254,7 @@ public class GT_Worldgenerator implements IWorldGenerator {
                                             validOreveins.put(oreveinSeed, tWorldGen);
                                             oreveinFound = true;
                                             if(aOreGenCallbackHandler != null) {
-                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mWorld, this.mX, this.mZ);
                                             }
                                             break;
                                         case GT_Worldgen_GT_Ore_Layer.NO_OVERLAP_AIR_BLOCK:
@@ -298,7 +298,7 @@ public class GT_Worldgenerator implements IWorldGenerator {
                         );
                         validOreveins.put(oreveinSeed, noOresInVein );
                         if(aOreGenCallbackHandler != null) {
-                            aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mX, this.mZ);
+                            aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mWorld, this.mX, this.mZ);
                         }
                     }
                 } else if(oreveinPercentageRoll >= oreveinPercentage) {
@@ -314,7 +314,7 @@ public class GT_Worldgenerator implements IWorldGenerator {
                     );
                     validOreveins.put(oreveinSeed, noOresInVein);
                     if(aOreGenCallbackHandler != null) {
-                        aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mX, this.mZ);
+                        aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mWorld, this.mX, this.mZ);
                     }
                 }
             }else {
@@ -327,7 +327,7 @@ public class GT_Worldgenerator implements IWorldGenerator {
                 oreveinRNG.setSeed(oreveinSeed ^ (tWorldGen.mPrimaryMeta));  // Reset RNG to only be based on oreseed X/Z and type of vein
                 int placementResult = tWorldGen.executeWorldgenChunkified(this.mWorld, oreveinRNG, this.mBiome, this.mDimensionType, this.mX*16, this.mZ*16, oreseedX*16, oreseedZ*16, this.mChunkGenerator, this.mChunkProvider);
                 if(aOreGenCallbackHandler != null) {
-                    aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                    aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mWorld, this.mX, this.mZ);
                 }
                 switch( placementResult )
                 {
