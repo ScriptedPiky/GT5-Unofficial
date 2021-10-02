@@ -1,5 +1,6 @@
 package gregtech.common;
 
+import api.visualprospecting.VPOreGenCallbackHandler;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTech_API;
@@ -234,6 +235,9 @@ public class GT_Worldgenerator implements IWorldGenerator {
                                             );
                                             validOreveins.put(oreveinSeed, tWorldGen);
                                             oreveinFound = true;
+                                            if(aOreGenCallbackHandler != null) {
+                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                                            }
                                             break;
                                         case GT_Worldgen_GT_Ore_Layer.NO_ORE_IN_BOTTOM_LAYER:
                                             placementAttempts++;
@@ -249,6 +253,9 @@ public class GT_Worldgenerator implements IWorldGenerator {
                                             );
                                             validOreveins.put(oreveinSeed, tWorldGen);
                                             oreveinFound = true;
+                                            if(aOreGenCallbackHandler != null) {
+                                                aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                                            }
                                             break;
                                         case GT_Worldgen_GT_Ore_Layer.NO_OVERLAP_AIR_BLOCK:
                                             if (debugOrevein) GT_Log.out.println(
@@ -290,6 +297,9 @@ public class GT_Worldgenerator implements IWorldGenerator {
                             " dimensionName=" + tDimensionName
                         );
                         validOreveins.put(oreveinSeed, noOresInVein );
+                        if(aOreGenCallbackHandler != null) {
+                            aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mX, this.mZ);
+                        }
                     }
                 } else if(oreveinPercentageRoll >= oreveinPercentage) {
                     if (debugOrevein) GT_Log.out.println(
@@ -303,6 +313,9 @@ public class GT_Worldgenerator implements IWorldGenerator {
                         " dimensionName=" + tDimensionName
                     );
                     validOreveins.put(oreveinSeed, noOresInVein);
+                    if(aOreGenCallbackHandler != null) {
+                        aOreGenCallbackHandler.prospectPotentialNewVein(noOresInVein.mWorldGenName, this.mX, this.mZ);
+                    }
                 }
             }else {
                 // oreseed is located in the previously processed table
@@ -313,6 +326,9 @@ public class GT_Worldgenerator implements IWorldGenerator {
                 GT_Worldgen_GT_Ore_Layer tWorldGen = validOreveins.get(oreveinSeed);
                 oreveinRNG.setSeed(oreveinSeed ^ (tWorldGen.mPrimaryMeta));  // Reset RNG to only be based on oreseed X/Z and type of vein
                 int placementResult = tWorldGen.executeWorldgenChunkified(this.mWorld, oreveinRNG, this.mBiome, this.mDimensionType, this.mX*16, this.mZ*16, oreseedX*16, oreseedZ*16, this.mChunkGenerator, this.mChunkProvider);
+                if(aOreGenCallbackHandler != null) {
+                    aOreGenCallbackHandler.prospectPotentialNewVein(tWorldGen.mWorldGenName, this.mX, this.mZ);
+                }
                 switch( placementResult )
                 {
                     case GT_Worldgen_GT_Ore_Layer.NO_ORE_IN_BOTTOM_LAYER:
@@ -499,5 +515,12 @@ public class GT_Worldgenerator implements IWorldGenerator {
                     );
             }
         }
+    }
+
+    // ----- Visual Prospecting Integration -----
+    private static VPOreGenCallbackHandler aOreGenCallbackHandler = null;
+
+    public static void registerOreGenCallback(VPOreGenCallbackHandler aHandler) {
+        aOreGenCallbackHandler = aHandler;
     }
 }
