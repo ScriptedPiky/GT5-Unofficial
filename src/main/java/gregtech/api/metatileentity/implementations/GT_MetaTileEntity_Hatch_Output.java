@@ -6,8 +6,8 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_Utility;
-import gregtech.common.gui.GT_CUIContainer_OutputHatch;
 import gregtech.common.gui.GT_Container_OutputHatch;
+import gregtech.common.gui.GT_GUIContainer_OutputHatch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -179,7 +179,7 @@ public class GT_MetaTileEntity_Hatch_Output extends GT_MetaTileEntity_Hatch {
 
     @Override
     public Object getClientGUI(int aID, InventoryPlayer aPlayerInventory, IGregTechTileEntity aBaseMetaTileEntity) {
-        return new GT_CUIContainer_OutputHatch(aPlayerInventory, aBaseMetaTileEntity, getLocalName());
+        return new GT_GUIContainer_OutputHatch(aPlayerInventory, aBaseMetaTileEntity, getLocalName());
     }
 
     @Override
