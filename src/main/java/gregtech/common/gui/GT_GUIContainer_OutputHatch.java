@@ -8,11 +8,11 @@ import net.minecraft.util.StatCollector;
 
 import static gregtech.api.enums.GT_Values.RES_PATH_GUI;
 
-public class GT_CUIContainer_OutputHatch extends GT_GUIContainerMetaTile_Machine {
+public class GT_GUIContainer_OutputHatch extends GT_GUIContainerMetaTile_Machine {
 
     private final String mName;
 
-    public GT_CUIContainer_OutputHatch(InventoryPlayer aInventoryPlayer, IGregTechTileEntity aTileEntity, String aName) {
+    public GT_GUIContainer_OutputHatch(InventoryPlayer aInventoryPlayer, IGregTechTileEntity aTileEntity, String aName) {
         super(new GT_Container_OutputHatch(aInventoryPlayer, aTileEntity), RES_PATH_GUI + "OutputHatch.png");
         mName = aName;
     }
